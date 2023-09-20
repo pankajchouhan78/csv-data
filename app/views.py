@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 import io
 import csv
 from . models import *
@@ -34,8 +34,28 @@ def index(request):
                 volume = volume,
             )
         return render(request,"success.html")
+    stock = Stock.objects.all()
+    context = {
+            'stock':stock
+        }
+    return render(request, 'index.html', context)
 
+def search(request):
+    if request.method == "POST":
+        search = request.POST.get('rsearch')
+        print(search)
+        stock = Stock.objects.filter(volume__icontains = search)
+        print(stock)
+        context = {
+        'stock':stock
+        }
+    else:
+        return redirect('/')
+        # stock = Stock.objects.all()
+        # context = {
+        #     'stock':stock
+        # }
+    
+    return render(request, "index.html",context)
 
-        
-    return render(request, 'index.html')
 
